@@ -1,0 +1,125 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+void jugar(int level, char nombre[16]) {
+    int numero_secreto, intento, rango_max, max_intentos;
+    char *pista;
+
+    // Configurar según el nivel
+    switch (level) {
+        case 1:
+            rango_max = 50;
+            max_intentos = 20;
+            break;
+        case 2:
+            rango_max = 90;
+            max_intentos = 15;
+            break;
+        case 3:
+            rango_max = 130;
+            max_intentos = 10;
+            break;
+        default:
+            printf("Nivel invalido.\n");
+            return;
+    }
+
+    // Generar número secreto y pista
+    srand(time(0));
+    numero_secreto = rand() % rango_max + 1;
+
+    int pista_type = rand() % 2; // 0 o 1 para decidir el tipo de pista
+    if (pista_type == 0) {
+        if (numero_secreto % 2 == 0)
+            pista = "El numero es par.";
+        else
+            pista = "El numero es impar.";
+    } else {
+        if (numero_secreto <= rango_max / 2)
+            pista = "El numero está en la mitad inferior del rango.";
+        else
+            pista = "El numero está en la mitad superior del rango.";
+    }
+
+    printf("%s, tienes %d intentos para adivinar el numero entre 1 y %d.\n", nombre, max_intentos, rango_max);
+    printf("Pista: %s\n", pista);
+
+    for (int i = 1; i <= max_intentos; i++) {
+        printf("Intento %d: Ingresa tu numero (o presiona 0 para salir): ", i);
+        scanf("%d", &intento);
+
+        if (intento == 0) {
+            printf("Saliste del juego, %s. ¡Vuelve pronto!\n", nombre);
+            return;
+        } else if (intento == numero_secreto) {
+            printf("¡Felicidades, %s! Adivinaste el numero %d.\n", nombre, numero_secreto);
+            break;
+        } else if (intento < numero_secreto) {
+            printf("El numero secreto es mayor.\n");
+        } else {
+            printf("El numero secreto es menor.\n");
+        }
+
+        if (i == max_intentos) {
+            printf("Lo siento, %s. No adivinaste el numero. El numero era %d.\n", nombre, numero_secreto);
+        }
+    }
+}
+
+int main() {
+    printf("Bienvenido al desarrollo del juego de Adivinanza\n\"Adivina el numero\"\n");
+
+    int opcion = 0;
+    char nombre[16];
+    int nombre_guardado = 0;
+
+    do {
+        if (!nombre_guardado) {
+            printf("Dame tu nombre para poder ofrecerte una mejor experiencia.\n");
+            scanf("%s", nombre);
+            nombre_guardado = 1;
+        }
+
+        printf("Seleccione el nivel en el que quieres jugar, %s:\n", nombre);
+        printf("1. Nivel Principiante (1-50)\n");
+        printf("2. Nivel Avanzado (1-90)\n");
+        printf("3. Nivel Legendario (1-130)\n");
+        printf("0. Salir del juego\n");
+        scanf("%d", &opcion);
+
+        switch (opcion) {
+            case 1:
+                printf("¡Excelente %s, seleccionaste el Nivel Principiante, empecemos!\n", nombre);
+                jugar(opcion, nombre);
+                break;
+            case 2:
+                printf("¡Excelente %s, seleccionaste el Nivel Avanzado, empecemos!\n", nombre);
+                jugar(opcion, nombre);
+                break;
+            case 3:
+                printf("¡Excelente %s, seleccionaste el Nivel Legendario, empecemos!\n", nombre);
+                jugar(opcion, nombre);
+                break;
+            case 0:
+                printf("Saliste del juego, %s. ¡Vuelve pronto!\n", nombre);
+                break;
+            default:
+                printf("Error: Nivel invalido. Inténtalo de nuevo.\n");
+                break;
+        }
+
+        if (opcion != 0) {
+            printf("%s, ¿quieres jugar de nuevo? (1: Si, 0: No): ", nombre);
+            scanf("%d", &opcion);
+
+            if (opcion == 0) {
+                printf("Gracias por jugar, %s. ¡Hasta la proxima!\n", nombre);
+            }
+        }
+
+    } while (opcion != 0);
+
+    return 0;
+}
